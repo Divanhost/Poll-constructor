@@ -8,9 +8,9 @@ class Workspace extends React.Component{
             poll: props.poll,
             selectedQuestion: props.poll[0]
         }
+        this.addQuestion.bind(this)
     }
-    addQuestion() {
-        console.log('ssds')
+    addQuestion = () => {
         const question = {
             id: Math.random()*10000,
             title: '',
@@ -22,7 +22,7 @@ class Workspace extends React.Component{
         poll.questions.push(question);
         this.setState({
             poll:poll,
-            selectedQuestion:poll.last()
+            selectedQuestion:poll[0]
         });
     }
     removeQuestion(question) {

@@ -2,6 +2,10 @@ import React from 'react';
 import Option from './Option/Option'
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 import './Question.scss'
 class Question extends React.Component {
 
@@ -47,6 +51,14 @@ class Question extends React.Component {
             }
         })
     }
+    updateType = (event) => {
+        this.setState((prevState) => {
+            return {
+                ...prevState,
+                type: event.target.value
+            }
+        })
+    }
     addOption = () => {
         let options = [...this.state.options];
         const newOption = {
@@ -64,21 +76,35 @@ class Question extends React.Component {
 
     render() {
         const isList = this.state.type === "List";
+        const {type} = this.state;
         return (
             <div className="question-holder">
+                <FormControl>
+                    <InputLabel>Type</InputLabel>
+                    <Select
+                        defaultValue={type}
+                        onChange={this.updateType}
+                    >
+                        <MenuItem value={undefined}>
+                            <em>None</em>
+                        </MenuItem>
+                        <MenuItem value={'Rating'}>Rating</MenuItem>
+                        <MenuItem value={'List'}>List</MenuItem>
+                    </Select>
+                </FormControl>
                 <TextField
-                    className = "mb-1"
+                    className="mb-1"
                     label="Title"
                     type="text"
                     defaultValue={this.state.title}
-                    onChange = {(e) => this.updateTitle}
+                    onChange={(e) => this.updateTitle}
                 />
                 <TextField
-                    className = "mb-1"
+                    className="mb-1"
                     label="Description"
                     type="text"
                     defaultValue={this.state.description}
-                    onChange = {(e) => this.updateDescription}
+                    onChange={(e) => this.updateDescription}
                 />
                 {
                     isList && <div>
