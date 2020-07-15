@@ -1,7 +1,7 @@
 import React from 'react';
 import Checkbox from '@material-ui/core/Checkbox';
 import TextField from '@material-ui/core/TextField';
-const Option = ({id, name, updateOption }) => {
+export const Option = ({id, name, updateOption }) => {
     return (
         <div>
             <div className = "d-flex">
@@ -20,4 +20,3 @@ const Option = ({id, name, updateOption }) => {
         </div>
     )
 }
-export default Option;
