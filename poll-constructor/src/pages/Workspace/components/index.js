@@ -3,3 +3,4 @@ export {Preview} from "./Preview";
 export {Question} from "./Question";
 export {DragHandle} from "./DragHandle";
 export {QuestionsPool} from "./QuestionsPool";
+export {Sidebar} from "./Sidebar";

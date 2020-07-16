@@ -9,48 +9,55 @@ import { SortableElement } from 'react-sortable-hoc';
 import { DragHandle, Option } from '../index';
 
 import './Question.scss'
+
 export const Question = SortableElement(({ 
     data,
+    i,
     index,
     selectQuestion,
+    removeQuestion,
     addOption,
     updateOption,
     updateTitle,
     updateDescription,
     updateType}) => {
     return (
-        <div>
+        <div className="question-wrapper">
             <DragHandle />
-            <FormControl>
+            <FormControl className = "w-100">
                 <InputLabel>Type</InputLabel>
                 <Select
-                    defaultValue={data.type}
-                    onChange={updateType}
+                    value={data.type ? data.type : "Rating"}
+                    onChange={(e) => updateType(e,data.id)}
                 >
-                    <MenuItem value={undefined}>
-                        <em>None</em>
-                    </MenuItem>
                     <MenuItem value={'Rating'}>Rating</MenuItem>
                     <MenuItem value={'List'}>List</MenuItem>
                 </Select>
             </FormControl>
             <TextField
-                className="mb-1"
+                className="mb-1 w-100"
                 label="Title"
                 type="text"
                 defaultValue={data.title}
-                onChange={(e) => updateTitle}
+                onChange={(e) => updateTitle(e, data.id)}
             />
-            <TextField
-                className="mb-1"
-                label="Description"
-                type="text"
-                defaultValue={data.description}
-                onChange={(e) => updateDescription}
-            />
-            <Button variant="contained" color="primary" onClick={(e) => selectQuestion(index)}>
-                Click me
-                </Button>
+            {
+                data.hasDescription &&
+                <TextField
+                    className="mb-3 w-100"
+                    label="Description"
+                    type="text"
+                    defaultValue={data.description}
+                    onChange={(e) => updateDescription(e, data.id)}
+                />
+            }
+            
+            <Button variant="contained" className="w-100 mb-3" color="primary" onClick={(e) => selectQuestion(e, i)}>
+                Select
+            </Button>
+            <Button variant="contained" className="w-100 mb-3" color="primary" onClick={(e) => removeQuestion(e, i)}>
+                Delete
+            </Button>
             {
                 data.type === "List" && <div>
                     <div>
@@ -58,9 +65,9 @@ export const Question = SortableElement(({
                             <Option key={item.id} id={item.id} name={item.name} updateOption={updateOption} />
                         ))}
                     </div>
-                    <Button variant="contained" color="primary" onClick={(e) => addOption()}>
+                    <Button variant="contained" className="w-100" color="primary" onClick={(e) => addOption(data.id)}>
                         + Add Option
-                        </Button>
+                    </Button>
                 </div>
             }
         </div>

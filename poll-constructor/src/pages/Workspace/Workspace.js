@@ -1,6 +1,6 @@
 import React from 'react';
-import { QuestionsPool, Question } from "./components";
-import { arrayMove} from 'react-sortable-hoc';
+import { QuestionsPool, Question, Sidebar, Preview } from "./components";
+import { arrayMove } from 'react-sortable-hoc';
 import Button from '@material-ui/core/Button';
 class Workspace extends React.Component {
     constructor(props) {
@@ -23,20 +23,22 @@ class Workspace extends React.Component {
         poll.questions.push(question);
         this.setState({
             poll: poll,
-            selectedQuestion: poll.questions[poll.question.length - 1]
+            selectedQuestion: poll.questions[0]
         });
     }
 
-    removeQuestion = (question) => {
+    removeQuestion = (event, id) => {
         const { poll } = this.state;
-        poll.questions = poll.questions.filter(q => q !== question);
+        const index = poll.questions.indexOf(q=>q.id === id);
+        poll.questions.splice(index,1);
         this.setState({
             poll: poll,
-            selectedQuestion: null
+            selectedQuestion: poll.questions[0]
         });
     }
 
-    selectQuestion = (index) => {
+    selectQuestion = (event, index) => {
+        console.log(index);
         this.setState((prevState) => {
             return {
                 ...prevState,
@@ -53,63 +55,95 @@ class Workspace extends React.Component {
 
     /* DnD */
     onSortEnd = ({ oldIndex, newIndex }) => {
-        this.setState({
-            questions: arrayMove(this.state.questions, oldIndex, newIndex),
-        });
+        const { poll } = this.state;
+        poll.questions = arrayMove(poll.questions, oldIndex, newIndex);
+        this.setState((prevState) => {
+            return {
+                ...prevState,
+                poll: poll
+            }
+        })
     };
     /* /DnD */
 
     /* Attributes management */
-    addOption = () => {
-        let options = [...this.state.options];
+    addOption = (id) => {
+        const { poll } = this.state;
         const newOption = {
             id: Math.random() * 10000,
             name: ''
         }
+        const options = poll.questions.find(x => x.id === id).options;
         options.push(newOption)
         this.setState((prevState) => {
             return {
                 ...prevState,
-                options: options
+                poll: poll
             }
         })
     }
     updateOption = (event, id) => {
-        const index = this.state.options.findIndex(element => element.id === id)
-        let options = [...this.state.options];
-        options[index] = { ...options[index], name: event.target.value }
+        // const {poll} = this.state;
+        // const options = poll.questions.find(x=>x.id === id).options;
+        // const index = options.findIndex(element => element.id === id)
+        // options[index] = { ...options[index], name: event.target.value }
+        // this.setState((prevState) => {
+        //     return {
+        //         ...prevState,
+        //         poll: poll
+        //     }
+        // })
+    }
+    updateTitle = (event, id) => {
+        const { poll } = this.state;
+        poll.questions.find(x => x.id === id).title = event.target.value;
         this.setState((prevState) => {
             return {
                 ...prevState,
-                options: options
+                poll: poll
             }
         })
     }
-    updateTitle = (event) => {
-        let title = this.state.title;
-        title = event.target.value;
+    updateDescription = (event, id) => {
+        const { poll } = this.state;
+        poll.questions.find(x => x.id === id).description = event.target.value;
         this.setState((prevState) => {
             return {
                 ...prevState,
-                title: title
+                poll: poll
             }
         })
     }
-    updateDescription = (event) => {
-        let description = this.state.description;
-        description = event.target.value;
+    updateType = (event, id) => {
+        const { poll } = this.state;
+        poll.questions.find(x => x.id === id).type = event.target.value;
+
         this.setState((prevState) => {
             return {
                 ...prevState,
-                description: description
+                poll: poll
             }
         })
     }
-    updateType = (event) => {
+    switchOptional = (event, id) => {
+        const { poll } = this.state;
+        poll.questions.find(x => x.id === id).type = event.target.value;
+
         this.setState((prevState) => {
             return {
                 ...prevState,
-                type: event.target.value
+                poll: poll
+            }
+        })
+    }
+    switchHasDescription = (event, id) => {
+        const { poll } = this.state;
+        poll.questions.find(x => x.id === id).type = event.target.value;
+
+        this.setState((prevState) => {
+            return {
+                ...prevState,
+                poll: poll
             }
         })
     }
@@ -117,17 +151,34 @@ class Workspace extends React.Component {
     /* /Attributes management */
 
     render() {
+        const {selectedQuestion} = this.state;
         return (
             <div className='d-flex'>
+                {
+                    selectedQuestion &&
+                    <Sidebar
+                        id={selectedQuestion.id}
+                        type={selectedQuestion.type}
+                        isOptional={selectedQuestion.isOptional}
+                        hasDescription={selectedQuestion.hasDescription}
+                        updateType={this.updateType}
+                        switchOptional={this.switchOptional}
+                        switchHasDescription={this.switchHasDescription}
+
+                    />
+                }
                 <div>
+
                     <QuestionsPool onSortEnd={this.onSortEnd} useDragHandle>
                         {this.state.poll.questions.map((item, index) => {
                             return (
                                 <Question
                                     key={item.id}
-                                    index = {index}
+                                    i={index}
+                                    index={index}
                                     data={item}
                                     selectQuestion={this.selectQuestion}
+                                    removeQuestion = {this.removeQuestion}
                                     addOption={this.addOption}
                                     updateOption={this.updateOption}
                                     updateTitle={this.updateTitle}
@@ -137,11 +188,16 @@ class Workspace extends React.Component {
                             )
                         })}
                     </QuestionsPool>
-                    <Button variant="contained" color="primary" onClick={(e) => this.addQuestion(e)}>
+                    <Button variant="contained" className="w-100 mb-3" color="primary" onClick={(e) => this.addQuestion(e)}>
                         + Add Question
                     </Button>
                 </div>
-                {/* <Preview index={() => this.getSelectedIndex()} question={this.state.selectedQuestion}/> */}
+                <div>
+                    {
+                        selectedQuestion &&
+                        <Preview index={() => this.getSelectedIndex()} question={selectedQuestion}/>
+                    }
+                </div>
             </div>
         );
     }
