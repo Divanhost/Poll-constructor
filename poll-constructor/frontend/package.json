@@ -10,9 +10,12 @@
     "@testing-library/user-event": "^7.2.1",
     "bootstrap": "^4.5.0",
     "fontsource-roboto": "^2.1.4",
+    "history": "^5.0.0",
+    "material-table": "^1.65.0",
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "react-sortable-hoc": "^1.11.0"
   },

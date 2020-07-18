@@ -2,12 +2,14 @@ import React from 'react';
 import { QuestionsPool, Question, Sidebar, Preview } from "./components";
 import { arrayMove } from 'react-sortable-hoc';
 import Button from '@material-ui/core/Button';
-class Workspace extends React.Component {
+import data from '../../shared/data';
+
+export class Workspace extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            poll: props.poll,
-            selectedQuestion: props.poll.questions[0]
+            poll: data.polls[0],
+            selectedQuestion: data.polls[0].questions[0]
         }
     }
     /* Questions management */
@@ -127,8 +129,8 @@ class Workspace extends React.Component {
     }
     switchOptional = (event, id) => {
         const { poll } = this.state;
-        poll.questions.find(x => x.id === id).type = event.target.value;
-
+        const question = poll.questions.find(x => x.id === id);
+        question.isOptional = event.target.checked;
         this.setState((prevState) => {
             return {
                 ...prevState,
@@ -138,8 +140,8 @@ class Workspace extends React.Component {
     }
     switchHasDescription = (event, id) => {
         const { poll } = this.state;
-        poll.questions.find(x => x.id === id).type = event.target.value;
-
+        const question = poll.questions.find(x => x.id === id);
+        question.hasDescription = event.target.checked;
         this.setState((prevState) => {
             return {
                 ...prevState,
@@ -203,4 +205,3 @@ class Workspace extends React.Component {
     }
 
 }
-export default Workspace;
