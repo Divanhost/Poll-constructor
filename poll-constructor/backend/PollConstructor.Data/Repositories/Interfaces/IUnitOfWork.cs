@@ -13,6 +13,23 @@ namespace PollConstructor.Data.Repositories.Interfaces
         {
             get;
         }
+         IRepository<Poll, int> PollRepository
+        {
+            get;
+        }
+         IRepository<Question, int> QuestionRepository
+        {
+            get;
+        }
+
+         IRepository<Option, int> OptionRepository
+        {
+            get;
+        }
+         IRepository<TokenCouple, int> TokenCoupleRepository
+        {
+            get;
+        }
         
         Task<int> Save();
     }

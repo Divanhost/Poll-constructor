@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using PollConstructor.Core.Services.Interfaces;
 using PollConstructor.Data.Repositories.Interfaces;
 using PollConstructor.Shared.DTO;
 using PollConstructor.Shared.Exceptions;
+using PollConstructor.Shared.Models;
 using PollConstructor.Shared.Models.Identity;
 
 namespace PollConstructor.Core.Services.Implementation
@@ -44,13 +46,54 @@ namespace PollConstructor.Core.Services.Implementation
 
             throw new WebsiteException("Login Failed! Incorrect login or password!");
         }
-
-        public async Task<User[]> GetAllUsers()
+        public async Task<TokenCouple> RenewAsync(TokenCouple tokenCouple)
         {
-            var result = await _unitOfWork.UserRepository.All().ToArrayAsync();
-            return result;
+            var handler = new JwtSecurityTokenHandler();
+            var jwtObject = handler.ReadJwtToken(tokenCouple.Jwt);
+            var userId = jwtObject.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.NameId).Value;
+            var tokenCoupleFromDb = await _unitOfWork.TokenCoupleRepository
+                .Filter(x => x.Refresh == tokenCouple.Refresh && x.Jwt == tokenCouple.Jwt)
+                .FirstOrDefaultAsync();
+            if (tokenCoupleFromDb != null)
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (!user.IsDeleted)
+                {
+                    return await GetTokenCouple(user.UserName, user);
+                }
+                else
+                {
+                    throw new WebsiteException("Renew Failed! User has been deleted!");
+                }
+            }
+            else
+            {
+                throw new WebsiteException("Renew Failed! Refresh token doesn't exist!");
+            }
         }
 
+        private async Task<TokenCouple> GetTokenCouple(string login, User appUser)
+        {
+            var result = new TokenCouple()
+            {
+                Jwt = GenerateJwtToken(login, appUser),
+                Refresh = GenerateRefreshToken()
+            };
+
+            var tokenCouple = _unitOfWork.TokenCoupleRepository.Create(result);
+            await _unitOfWork.Save();
+
+            return tokenCouple;
+        }
+
+        private string GenerateRefreshToken()
+        {
+            var random = new Random();
+            byte[] bytes = new Byte[32];
+            random.NextBytes(bytes);
+            var token = Convert.ToBase64String(bytes);
+            return token;
+        }
         private string GenerateJwtToken(string login, User appUser)
         {
 
