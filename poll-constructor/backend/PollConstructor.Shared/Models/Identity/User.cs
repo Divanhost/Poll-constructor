@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
 namespace PollConstructor.Shared.Models.Identity
 {
     public class User : IdentityUser<int>, IEntity<int>
     {
+        [Required]
         public string FullName
         {
             get;
@@ -21,7 +23,7 @@ namespace PollConstructor.Shared.Models.Identity
             set;
         }
 
-          public virtual List<Poll> Polls
+        public virtual List<Poll> Polls
         {
             get;
             set;
