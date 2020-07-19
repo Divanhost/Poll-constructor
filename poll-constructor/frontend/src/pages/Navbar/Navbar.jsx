@@ -11,8 +11,11 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
+import {CustomModal} from '../../components/modal.component';
 import { Button } from '@material-ui/core';
 import "./Navbar.scss";
+import Register from '../../components/register.component';
+import Login from '../../components/login.component';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -90,9 +93,21 @@ export const Navbar = () => {
                 open={open}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>Login</MenuItem>
+                <MenuItem onClick={handleClose}>Login 
+                <CustomModal>
+                  <Login>
+
+                  </Login>
+                </CustomModal>
+                </MenuItem>
                 <div className="dropdown-divider"></div>
-                <MenuItem onClick={handleClose}>Register</MenuItem>
+                <MenuItem onClick={handleClose}>Register
+                <CustomModal>
+                  <Register>
+
+                  </Register>
+                </CustomModal>
+                </MenuItem>
               </Menu>
             </div>
           )}

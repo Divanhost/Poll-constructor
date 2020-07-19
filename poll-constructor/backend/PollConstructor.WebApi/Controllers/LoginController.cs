@@ -10,7 +10,7 @@ using PollConstructor.Shared.Models;
 
 namespace PollConstructor.Web.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
     [Authorize]
 

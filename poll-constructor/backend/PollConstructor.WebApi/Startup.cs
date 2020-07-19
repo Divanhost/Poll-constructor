@@ -30,20 +30,23 @@ namespace PollConstructor.WebApi
                     options.JsonSerializerOptions.IgnoreNullValues = true;
                 });
 
-           services.AddCors(options =>
+            services.AddCors(options =>
             {
                 options.AddDefaultPolicy(builder =>
                     builder
-                    .AllowAnyOrigin()
+                    .WithOrigins(_corsOrigins.SelectMany(origin => new []
+                    {
+                        $"http://{origin}",
+                        $"https://{origin}"
+                    }).ToArray())
                     .AllowAnyHeader()
                     .AllowAnyMethod()
-                    .AllowCredentials()
-                );
+                    .AllowCredentials());
             });
             services.RegisterDependencies(Configuration);
             services.SetupAuthorization(Configuration);
-            //services.AddHttpContextAccessor();
-            //services.AddRouting();
+            services.AddHttpContextAccessor();
+            services.AddRouting();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,5 +68,9 @@ namespace PollConstructor.WebApi
                 cfg.MapControllers();
             });
         }
+        private readonly string[] _corsOrigins = {
+            "localhost:5001",
+            "localhost:3000"
+        };
     }
 }
