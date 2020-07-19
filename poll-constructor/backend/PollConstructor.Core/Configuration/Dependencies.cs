@@ -70,8 +70,13 @@ namespace PollConstructor.Core.Configuration
         private static void AddDbContext(IServiceCollection services, IConfiguration configuration)
         {
             var connection = configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<AppDbContext>(
-                options => options.UseSqlServer(connection, x => x.MigrationsAssembly("PollConstructor.Data")));
+            // services.AddDbContext<AppDbContext>(
+            //     options => options.UseSqlServer(connection, x => x.MigrationsAssembly("PollConstructor.Data")));
+            services.AddDbContext<AppDbContext>(options =>
+            {
+                options.EnableSensitiveDataLogging();
+                options.UseInMemoryDatabase(databaseName: "Test");
+            });
         }
 
         private static void AddTestDbContext(IServiceCollection services)

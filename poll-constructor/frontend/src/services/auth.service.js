@@ -22,10 +22,11 @@ export class AuthService {
     localStorage.removeItem("user");
   }
 
-  register = (username, password, fullName) => {
+  register = (username, password, email, fullName) => {
     return httpService.post('user', {
       username,
       password,
+      email,
       fullName
     });
   }

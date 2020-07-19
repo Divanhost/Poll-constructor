@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using PollConstructor.Shared.Models;
 using PollConstructor.Shared.Models.Identity;
 
 namespace PollConstructor.Data.Context
@@ -20,7 +21,9 @@ namespace PollConstructor.Data.Context
 
             #region Declare tables
 
-            // builder.Entity<User>().ToTable("Users");
+            builder.Entity<Poll>().ToTable("Users");
+            builder.Entity<Question>().ToTable("Users");
+            builder.Entity<Option>().ToTable("Users");
             
 
             #endregion

@@ -55,12 +55,13 @@ namespace PollConstructor.Core.Services.Implementation
             var userToCreate = new User()
             {
                 UserName = userModel.UserName,
-                FullName = userModel.FullName
+                FullName = userModel.FullName,
+                Email = userModel.Email,
+                Roles = new List<UserRole>()
             };
 
             var dbUser = await _userManager.FindByNameAsync(userToCreate.UserName);
-            var userFromDb = await _userManager.FindByEmailAsync(userToCreate.Email);
-            if (userFromDb != null || dbUser != null)
+            if (dbUser != null)
             {
                 throw new WebsiteException(ExistingUserMessage);
             }
@@ -69,11 +70,9 @@ namespace PollConstructor.Core.Services.Implementation
                 var creationResult = await _userManager.CreateAsync(userToCreate, userModel.Password);
                 if (!creationResult.Succeeded)
                     throw new WebsiteException("Cannot create a default user.");
-                userFromDb = userToCreate;
-
                 await _unitOfWork.Save();
             }
-            return userFromDb;
+            return userToCreate;
         }
 
         public async Task<string> CheckUserNameExists(string username)

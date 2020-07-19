@@ -92,8 +92,8 @@ namespace PollConstructor.Core.Middleware
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
 
-                // User settings
-                options.User.RequireUniqueEmail = true;
+                // // User settings
+                // options.User.RequireUniqueEmail = true;
             });
         }
 
