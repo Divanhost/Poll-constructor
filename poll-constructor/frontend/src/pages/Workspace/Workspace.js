@@ -2,22 +2,52 @@ import React from 'react';
 import { QuestionsPool, Question, Sidebar, Preview } from "./components";
 import { arrayMove } from 'react-sortable-hoc';
 import Button from '@material-ui/core/Button';
-import data from '../../shared/data';
-
+import { PollService } from '../../services';
+import './Workspace.scss'
+const service = new PollService();
 export class Workspace extends React.Component {
     constructor(props) {
         super(props);
+        const id = this.props.match.params.id
         this.state = {
-            poll: data.polls[0],
-            selectedQuestion: data.polls[0].questions[0]
+            id: id,
+            poll: {
+                questions: []
+            },
+            selectedQuestion: null,
+            loaded: false,
+            isSidebarOpened: false
         }
+    }
+    componentDidMount() {
+        const { id } = this.state;
+        if (id) {
+            service.get(id).then(data => {
+                if (data) {
+                    this.setState((prevState) => {
+                        return {
+                            ...prevState,
+                            poll: data.payload,
+                            loaded: true
+                        }
+                    })
+                }
+            });
+        } else {
+            this.setState((prevState) => {
+                return {
+                    ...prevState,
+                    loaded: true
+                }
+            })
+        }
+
     }
     /* Questions management */
     addQuestion = () => {
         const question = {
-            id: Math.random() * 10000,
-            title: '',
-            description: '',
+            title: null,
+            description: null,
             type: 'Rating',
             options: []
         }
@@ -29,10 +59,11 @@ export class Workspace extends React.Component {
         });
     }
 
-    removeQuestion = (event, id) => {
+    removeQuestion = (event, question) => {
+        debugger
         const { poll } = this.state;
-        const index = poll.questions.indexOf(q=>q.id === id);
-        poll.questions.splice(index,1);
+        const index = poll.questions.findIndex(q => q === question);
+        poll.questions.splice(index, 1);
         this.setState({
             poll: poll,
             selectedQuestion: poll.questions[0]
@@ -40,7 +71,6 @@ export class Workspace extends React.Component {
     }
 
     selectQuestion = (event, index) => {
-        console.log(index);
         this.setState((prevState) => {
             return {
                 ...prevState,
@@ -49,9 +79,37 @@ export class Workspace extends React.Component {
         })
         console.log(this.state);
     }
+    nextQuestion = (event, index) => {
+        this.setState((prevState) => {
+            return {
+                ...prevState,
+                selectedQuestion: this.state.poll.questions[index + 1]
+            }
+        })
+    }
+    prevQuestion = (event, index) => {
+        this.setState((prevState) => {
+            return {
+                ...prevState,
+                selectedQuestion: this.state.poll.questions[index - 1]
+            }
+        })
+    }
 
     getSelectedIndex = () => {
-        this.state.poll.findIndex(element => element.id === this.state.selectedQuestion.id)
+        return this.state.poll.questions.findIndex(element => element === this.state.selectedQuestion)
+    }
+    updatePoll = (event, id) => {
+        const { poll } = this.state;
+        service.update(id, poll).then(data => {
+            return data;
+        });
+    }
+    createPoll = (event) => {
+        const { poll } = this.state;
+        service.create(poll).then(data => {
+            return data;
+        });
     }
     /* /QuestionsManagement */
 
@@ -72,8 +130,8 @@ export class Workspace extends React.Component {
     addOption = (id) => {
         const { poll } = this.state;
         const newOption = {
-            id: Math.random() * 10000,
-            name: ''
+            id: 0,
+            name: null
         }
         const options = poll.questions.find(x => x.id === id).options;
         options.push(newOption)
@@ -84,17 +142,17 @@ export class Workspace extends React.Component {
             }
         })
     }
-    updateOption = (event, id) => {
-        // const {poll} = this.state;
-        // const options = poll.questions.find(x=>x.id === id).options;
-        // const index = options.findIndex(element => element.id === id)
-        // options[index] = { ...options[index], name: event.target.value }
-        // this.setState((prevState) => {
-        //     return {
-        //         ...prevState,
-        //         poll: poll
-        //     }
-        // })
+    updateOption = (event, option, parent) => {
+        const { poll } = this.state;
+        const options = poll.questions.find(x => x === parent).options;
+        const index = options.findIndex(element => element === option)
+        options[index] = { ...options[index], name: event.target.value }
+        this.setState((prevState) => {
+            return {
+                ...prevState,
+                poll: poll
+            }
+        })
     }
     updateTitle = (event, id) => {
         const { poll } = this.state;
@@ -153,54 +211,89 @@ export class Workspace extends React.Component {
     /* /Attributes management */
 
     render() {
-        const {selectedQuestion} = this.state;
+        const { selectedQuestion, isSidebarOpened, loaded, poll, id } = this.state;
+        const i = this.getSelectedIndex();
         return (
-            <div className='d-flex'>
+            <div>
                 {
-                    selectedQuestion &&
-                    <Sidebar
-                        id={selectedQuestion.id}
-                        type={selectedQuestion.type}
-                        isOptional={selectedQuestion.isOptional}
-                        hasDescription={selectedQuestion.hasDescription}
-                        updateType={this.updateType}
-                        switchOptional={this.switchOptional}
-                        switchHasDescription={this.switchHasDescription}
-
-                    />
-                }
-                <div>
-
-                    <QuestionsPool onSortEnd={this.onSortEnd} useDragHandle>
-                        {this.state.poll.questions.map((item, index) => {
-                            return (
-                                <Question
-                                    key={item.id}
-                                    i={index}
-                                    index={index}
-                                    data={item}
-                                    selectQuestion={this.selectQuestion}
-                                    removeQuestion = {this.removeQuestion}
-                                    addOption={this.addOption}
-                                    updateOption={this.updateOption}
-                                    updateTitle={this.updateTitle}
-                                    updateDescription={this.updateDescription}
+                    !loaded ?
+                        <div className="d-flex justify-content-center mt-3">
+                            <div className="spinner-border"
+                                style={{
+                                    width: 10 + 'rem',
+                                    height: 10 + 'rem'
+                                }}
+                                role="status">
+                                <span className="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                        :
+                        <div className='d-flex'>
+                            {
+                                (selectedQuestion && isSidebarOpened) &&
+                                <Sidebar
+                                    id={selectedQuestion.id}
+                                    type={selectedQuestion.type}
+                                    isOptional={selectedQuestion.isOptional}
+                                    hasDescription={selectedQuestion.hasDescription}
                                     updateType={this.updateType}
+                                    switchOptional={this.switchOptional}
+                                    switchHasDescription={this.switchHasDescription}
+
                                 />
-                            )
-                        })}
-                    </QuestionsPool>
-                    <Button variant="contained" className="w-100 mb-3" color="primary" onClick={(e) => this.addQuestion(e)}>
-                        + Add Question
-                    </Button>
-                </div>
-                <div>
-                    {
-                        selectedQuestion &&
-                        <Preview index={() => this.getSelectedIndex()} question={selectedQuestion}/>
-                    }
-                </div>
+                            }
+                            <div className='q-pool'>
+                                {
+                                    <QuestionsPool onSortEnd={this.onSortEnd} useDragHandle>
+                                        {poll.questions.map((item, index) => {
+                                            return (
+                                                <Question
+                                                    key={item.id}
+                                                    i={index}
+                                                    index={index}
+                                                    data={item}
+                                                    selectQuestion={this.selectQuestion}
+                                                    removeQuestion={this.removeQuestion}
+                                                    addOption={this.addOption}
+                                                    updateOption={this.updateOption}
+                                                    updateTitle={this.updateTitle}
+                                                    updateDescription={this.updateDescription}
+                                                    updateType={this.updateType}
+                                                />
+                                            )
+                                        })}
+                                    </QuestionsPool>
+                                    
+                                }
+                                <Button variant="contained" className=" ml-3 mb-3" 
+                                style = {{
+                                    width:310
+                                }}
+                                color="primary" onClick={(e) => this.addQuestion(e)}>
+                                + Add Question
+                                </Button>
+                            </div>
+                          
+                            <div>
+                                {
+                                    <Preview 
+                                    index={i} 
+                                    question={selectedQuestion} 
+                                    nextQuestion={this.nextQuestion}
+                                    prevQuestion={this.prevQuestion}  />
+                                }
+                            </div>
+                        </div>
+
+                }
+                <Button variant="contained" className="w-100 mb-3" color="primary" onClick={(e) => this.updatePoll(e, id)}>
+                    save
+                </Button>
+                <Button variant="contained" className="w-100 mb-3" color="primary" onClick={(e) => this.createPoll(e,)}>
+                    create
+                </Button>
             </div>
+
         );
     }
 

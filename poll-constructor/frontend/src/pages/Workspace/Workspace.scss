@@ -1,11 +1,9 @@
-.questions-list {
+
+.q-pool {
     display: flex;
     flex-direction: column;
+    max-width: 66vw;
+    justify-content: center;
+    width: 100%;
     align-items: center;
-    padding: 1em;
-    border: 1px solid;
-    max-width: fit-content;
-    margin-bottom: 1em;
-    background-color: #fff;
-    cursor: pointer;
 }

@@ -1,43 +1,39 @@
 import HttpService from './http.service'
-const API_USER = "https://localhost:5001/api/poll/";
 
 const httpService = new HttpService();
 
 export class PollService {
   create = (data) => {
-    return httpService.post('poll', data)
-    .then(response => {
-      return response.json();
-    });
+    return httpService.post('polls', data)
+    .then(data => {
+      return data;
+  });
   }
 
-  update = (data) => {
-    return httpService.put('poll', data).then(response => {
-      return response.json();
-    });
+  update = (id, data) => {
+    return httpService.put(`polls/${id}`, data)
+    .then(data => {
+      return data;
+  });
   }
 
   delete = (id) => {
-    return httpService.delete(`poll/${id}`)
-    .then(response => {
-      return response.json();
-    });
+    return httpService.delete(`polls/${id}`)
+    .then(data => {
+      return data;
+  });
   }
 
   get = (id) => {
-    return httpService.get(`poll/${id}`)
-    .then(response => {
-      return response.json();
-    }).then(data => {
+    return httpService.get(`polls/${id}`)
+    .then(data => {
         return data;
     });
   }
 
   getAll = () => {
-    return httpService.post(`poll/all`)
-    .then(response => {
-      return response.json();
-    }).then(data => {
+    return httpService.get(`polls/all`)
+    .then(data => {
         return data;
     });
   }

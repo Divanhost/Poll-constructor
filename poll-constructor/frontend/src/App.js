@@ -42,7 +42,8 @@ class App extends React.Component {
       <Navbar loggedIn = {loggedIn} currentUser ={currentUser}/>
       <Switch>
         <Route history={history} path='/home' component={PollTable} />
-        <Route history={history} path='/constructor' component={Workspace} />
+        <Route exact history={history} path='/constructor' component={Workspace} />
+        <Route history={history} path='/constructor/:id' component={Workspace} />
         <Redirect from='/' to='/home'/>
       </Switch>
       </div>

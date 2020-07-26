@@ -15,8 +15,10 @@ namespace PollConstructor.Core.Configuration
             CreateMap<User, UserView>();
             CreateMap<UserDto, User>();
 
-            CreateMap<Poll, PollView>();
-            CreateMap<PollDto, Poll>();
+            CreateMap<Poll, PollView>()
+            .ForMember(x=>x.CreatedBy, src =>src.MapFrom(p=>p.CreatedBy.FullName));
+            CreateMap<PollDto, Poll>()
+            .ForMember(x=>x.CreatedBy, src =>src.Ignore());
 
             CreateMap<Question, QuestionView>();
             CreateMap<QuestionDto, Question>();

@@ -1,5 +1,4 @@
 import HttpService from './http.service'
-const API_USER = "https://localhost:5001/api/user/";
 
 const httpService = new HttpService();
 
@@ -8,8 +7,6 @@ export class AuthService {
     return httpService.post('auth/login', {
       username,
       password
-    }).then(response => {
-      return response.json();
     }).then(data => {
       localStorage.setItem("user", JSON.stringify(data));
     });

@@ -33,21 +33,21 @@ namespace BusinessIntelligence.Web.Controllers
         public async Task<IActionResult> Update(int id, [FromBody] PollDto eventDto)
         {
             await _service.Update(id, eventDto);
-            return Ok();
+            return ResponseModel(true);
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             await _service.Delete(id);
-            return Ok();
+            return ResponseModel(true);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] PollDto eventDto)
+        public async Task<IActionResult> Create([FromBody] PollDto eventDto)
         {
             await _service.Create(eventDto);
-            return Ok();
+            return ResponseModel(true);
         }
     }
 }

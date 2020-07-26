@@ -55,14 +55,14 @@ export const Question = SortableElement(({
             <Button variant="contained" className="w-100 mb-3" color="primary" onClick={(e) => selectQuestion(e, i)}>
                 Select
             </Button>
-            <Button variant="contained" className="w-100 mb-3" color="primary" onClick={(e) => removeQuestion(e, i)}>
+            <Button variant="contained" className="w-100 mb-3" color="primary" onClick={(e) => removeQuestion(e, data)}>
                 Delete
             </Button>
             {
                 data.type === "List" && <div>
                     <div>
                         {data.options.map(item => (
-                            <Option key={item.id} id={item.id} name={item.name} updateOption={updateOption} />
+                            <Option key={item.id} option={item} parent={data} updateOption={updateOption} />
                         ))}
                     </div>
                     <Button variant="contained" className="w-100" color="primary" onClick={(e) => addOption(data.id)}>
