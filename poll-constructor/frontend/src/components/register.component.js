@@ -55,11 +55,6 @@ const vfullName = value => {
 export default class Register extends Component {
   constructor(props) {
     super(props);
-    // this.handleRegister = this.handleRegister.bind(this);
-    // this.onChangeUsername = this.onChangeUsername.bind(this);
-    // this.onChangeEmail = this.onChangeEmail.bind(this);
-    // this.onChangePassword = this.onChangePassword.bind(this);
-
     this.state = {
       username: "",
       fullName: "",
@@ -111,10 +106,10 @@ export default class Register extends Component {
         this.state.fullName
       ).then(
         response => {
-          debugger
           this.setState({
             successful: true
           });
+          alert('success')
         },
         error => {
           const resMessage =

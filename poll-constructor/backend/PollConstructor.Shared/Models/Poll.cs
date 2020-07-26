@@ -11,7 +11,7 @@ namespace PollConstructor.Shared.Models
         public int Id {get; set; }
         
         [Required]
-        public string Name {get; set; }
+        public string Title {get; set; }
         public bool IsDeleted {get; set; }
         
 

@@ -13,6 +13,8 @@ using PollConstructor.Core.Services.Interfaces;
 using PollConstructor.Data.Context;
 using PollConstructor.Data.Repositories.Implementation;
 using PollConstructor.Data.Repositories.Interfaces;
+using PollConstructor.Shared;
+using PollConstructor.Shared.Models;
 using PollConstructor.Shared.Models.Identity;
 
 namespace PollConstructor.Core.Configuration
@@ -24,6 +26,7 @@ namespace PollConstructor.Core.Configuration
             services.AddSingleton(configuration);
             services.RegisterCommonDependencies();
             AddDbContext(services, configuration);
+            SeedData(services);
         }
 
         private static void RegisterCommonDependencies(this IServiceCollection services)
@@ -89,6 +92,27 @@ namespace PollConstructor.Core.Configuration
                     Mode = SqliteOpenMode.Memory
                 }.ConnectionString);
             });
+        }
+        private static void SeedData(IServiceCollection services)
+        {
+            var serviceProvider = services.BuildServiceProvider();
+            var dbContext = serviceProvider.GetService<AppDbContext>();
+
+            dbContext.Database.EnsureCreated();
+
+            var _unitOfWork = serviceProvider.GetService<IUnitOfWork>();
+            var _userManager = serviceProvider.GetService<UserManager<User>>();
+            var creationResult = _userManager.CreateAsync(SeedEntities.AdminUser, "@Werty123").GetAwaiter().GetResult();
+            _unitOfWork.PollRepository.Create(SeedEntities.SeedPoll);
+            try
+            {
+                var reuslt = _unitOfWork.Save().GetAwaiter().GetResult();
+                Console.WriteLine($"Database is set up. {reuslt} entities created");
+            }
+            catch
+            {
+
+            }
         }
     }
 }
