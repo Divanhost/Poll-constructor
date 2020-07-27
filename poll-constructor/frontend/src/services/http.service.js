@@ -1,5 +1,4 @@
 const API = "https://localhost:5001/api/";
-
 const defaultHeaders = () => {
   const userToken = JSON.parse(localStorage.getItem('user'));
   if (userToken) {

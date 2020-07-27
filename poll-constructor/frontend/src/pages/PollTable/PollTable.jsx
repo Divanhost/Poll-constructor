@@ -13,9 +13,11 @@ export class PollTable extends React.Component {
   }
   componentDidMount() {
     service.getAll().then(data => {
-      this.setState({
-        data: data.payload
-      })
+      if(data) {
+        this.setState({
+          data: data.payload
+        })
+      }
     });
   }
   render() {

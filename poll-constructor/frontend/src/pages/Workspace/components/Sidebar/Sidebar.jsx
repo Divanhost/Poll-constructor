@@ -6,6 +6,10 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import CloseIcon from '@material-ui/icons/Close';
+import './Sidebar.scss';
 export const Sidebar = ({
     id,
     type,
@@ -13,21 +17,30 @@ export const Sidebar = ({
     hasDescription,
     updateType,
     switchOptional,
-    switchHasDescription
+    switchHasDescription,
+    closeSidebar,
+    nextQuestion,
+    prevQuestion,
 }) => (
         <div className="sidebar">
-            <div className="p-3">
-                <FormControl className="w-100">
-                    <InputLabel>Type</InputLabel>
-                    <Select
-                        value={type ? type : "Rating"}
-                        onChange={(e) => updateType(e, id)}
-                    >
-                        <MenuItem value={'Rating'}>Rating</MenuItem>
-                        <MenuItem value={'List'}>List</MenuItem>
-                    </Select>
-                </FormControl>
-            </div>
+            <div className='inner-container d-flex flex-column align-items-start'>
+                <div className='buttons'>
+                    <KeyboardArrowUpIcon className='icon mr-2' onClick={(e) => nextQuestion(e)}/>
+                    <KeyboardArrowDownIcon className='icon mr-2' onClick={(e) => prevQuestion(e)}/>
+                    <CloseIcon className='icon' onClick={(e) => closeSidebar(e)}/>
+                </div>
+                <div className="p-3">
+                    <FormControl className="w-100">
+                        <InputLabel>Type</InputLabel>
+                        <Select
+                            value={type ? type : "Rating"}
+                            onChange={(e) => updateType(e, id)}
+                        >
+                            <MenuItem value={'Rating'}>Rating</MenuItem>
+                            <MenuItem value={'List'}>List</MenuItem>
+                        </Select>
+                    </FormControl>
+                </div>
                 <FormControlLabel
                     control={
                         <Switch
@@ -49,5 +62,7 @@ export const Sidebar = ({
                     label="Has Description"
                     labelPlacement="start"
                 />
+            </div>
+
         </div>
     )

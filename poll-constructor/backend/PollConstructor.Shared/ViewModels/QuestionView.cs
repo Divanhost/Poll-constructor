@@ -8,7 +8,7 @@ namespace PollConstructor.Shared.ViewModels
         public int Id {get; set; }
         public string Title {get; set; }
         public string Description {get; set; }
-        public PollType Type {get;set;}
+        public string Type {get;set;}
         public bool isOptional {get;set;}
         public bool hasDescription {get;set;}
         public int PollId {get; set; }

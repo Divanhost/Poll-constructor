@@ -55,10 +55,12 @@ namespace BusinessIntelligence.Core.Services.Implementation
         public async Task Update(int id, PollDto eventDto)
         {
             var oldPoll = _mapper.Map<Poll>(eventDto);
-            await UpdateQuestions(id, oldPoll.Questions);
+            var newQuestions = oldPoll.Questions;
             oldPoll.Questions = null;
-
             _unitOfWork.GetRepository<Poll, int>().Update(oldPoll);
+
+            await UpdateQuestions(id, newQuestions);
+
 
             await _unitOfWork.Save();
         }
@@ -74,12 +76,14 @@ namespace BusinessIntelligence.Core.Services.Implementation
             var questionsForUpdate = newQuestions.Where(x => x.Id != 0).ToList();
             var optionsForUpdate = questionsForUpdate.SelectMany(x=>x.Options).ToList();
             await UpdateOptions(eventId, optionsForUpdate);
-            questionsForUpdate.ForEach(q => q.Options = null);
+
+            newQuestions.ForEach(q => q.Options = null);
+
+            _unitOfWork.GetRepository<Question, int>().Update(questionsForUpdate);
 
             var questionsForCreate = newQuestions.Where(x => x.Id == 0).ToList();
             _unitOfWork.GetRepository<Question, int>().Create(questionsForCreate);
 
-            _unitOfWork.GetRepository<Question, int>().Update(questionsForUpdate);
         }
 
         private async Task UpdateOptions(int eventId, List<Option> newOptions)

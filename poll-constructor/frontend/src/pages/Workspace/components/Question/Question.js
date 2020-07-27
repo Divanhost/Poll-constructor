@@ -6,6 +6,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import { SortableElement } from 'react-sortable-hoc';
+import SettingsIcon from '@material-ui/icons/Settings';
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import { DragHandle, Option } from '../index';
 
 import './Question.scss'
@@ -51,13 +53,20 @@ export const Question = SortableElement(({
                     onChange={(e) => updateDescription(e, data.id)}
                 />
             }
-            
-            <Button variant="contained" className="w-100 mb-3" color="primary" onClick={(e) => selectQuestion(e, i)}>
-                Select
-            </Button>
-            <Button variant="contained" className="w-100 mb-3" color="primary" onClick={(e) => removeQuestion(e, data)}>
-                Delete
-            </Button>
+            <div className='buttons'>
+                <SettingsIcon
+                style={{
+                    color:'#666666',
+                    cursor:'pointer'
+                }}  
+                onClick={(e) => selectQuestion(e, i)}/>
+                <DeleteOutlineIcon
+                 style={{
+                    color:'#880bca',
+                    cursor:'pointer'
+                }}  
+                onClick={(e) => removeQuestion(e, data)}/>
+            </div>
             {
                 data.type === "List" && <div>
                     <div>
