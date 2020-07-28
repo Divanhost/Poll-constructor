@@ -55,12 +55,10 @@ namespace BusinessIntelligence.Core.Services.Implementation
         public async Task Update(int id, PollDto eventDto)
         {
             var oldPoll = _mapper.Map<Poll>(eventDto);
-            var newQuestions = oldPoll.Questions;
-            oldPoll.Questions = null;
+
+            await UpdateQuestions(id, oldPoll.Questions);
+
             _unitOfWork.GetRepository<Poll, int>().Update(oldPoll);
-
-            await UpdateQuestions(id, newQuestions);
-
 
             await _unitOfWork.Save();
         }
@@ -74,10 +72,9 @@ namespace BusinessIntelligence.Core.Services.Implementation
             _unitOfWork.GetRepository<Question, int>().Delete(x => questionsForDelete.Contains(x.Id));
 
             var questionsForUpdate = newQuestions.Where(x => x.Id != 0).ToList();
-            var optionsForUpdate = questionsForUpdate.SelectMany(x=>x.Options).ToList();
-            await UpdateOptions(eventId, optionsForUpdate);
 
-            newQuestions.ForEach(q => q.Options = null);
+            var optionsForUpdate = questionsForUpdate.SelectMany(x=>x.Options).ToList();
+            await UpdateOptions(questionsForUpdate, optionsForUpdate);
 
             _unitOfWork.GetRepository<Question, int>().Update(questionsForUpdate);
 
@@ -86,9 +83,9 @@ namespace BusinessIntelligence.Core.Services.Implementation
 
         }
 
-        private async Task UpdateOptions(int eventId, List<Option> newOptions)
+        private async Task UpdateOptions(List<Question> questionsForUpdate, List<Option> newOptions)
         {
-            var existingIds = await GetOptions(eventId);
+            var existingIds = await GetOptions(questionsForUpdate);
 
             var optionsForDelete = existingIds
                 .Where(sl => !newOptions.Any(c => c.Id == sl)).ToList();
@@ -109,11 +106,11 @@ namespace BusinessIntelligence.Core.Services.Implementation
                 .ToListAsync();
             return result;
         }
-        private async Task<List<int>> GetOptions(int id)
+        private async Task<List<int>> GetOptions(List<Question> questionsForUpdate)
         {
-            var result = await _unitOfWork.GetRepository<Poll, int>()
-                .Filter(x => x.Id == id)
-                .SelectMany(x => x.Questions)
+            var ids = questionsForUpdate.Select(x=>x.Id).ToList();
+            var result = await _unitOfWork.GetRepository<Question, int>()
+                .Filter(x => ids.Contains(x.Id))
                 .SelectMany(x => x.Options)
                 .Select(x => x.Id)
                 .ToListAsync();

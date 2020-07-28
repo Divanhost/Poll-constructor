@@ -40,7 +40,7 @@ export const Preview = ({ index, question, nextQuestion, prevQuestion }) => {
                         </div>
                         :
                         <div>
-                            SOSI
+                            Select first question
                 </div>
                 }
                 {

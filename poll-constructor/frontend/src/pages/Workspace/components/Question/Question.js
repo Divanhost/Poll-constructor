@@ -20,6 +20,7 @@ export const Question = SortableElement(({
     removeQuestion,
     addOption,
     updateOption,
+    removeOption,
     updateTitle,
     updateDescription,
     updateType}) => {
@@ -30,7 +31,7 @@ export const Question = SortableElement(({
                 <InputLabel>Type</InputLabel>
                 <Select
                     value={data.type ? data.type : "Rating"}
-                    onChange={(e) => updateType(e,data.id)}
+                    onChange={(e) => updateType(e,data)}
                 >
                     <MenuItem value={'Rating'}>Rating</MenuItem>
                     <MenuItem value={'List'}>List</MenuItem>
@@ -41,7 +42,7 @@ export const Question = SortableElement(({
                 label="Title"
                 type="text"
                 defaultValue={data.title}
-                onChange={(e) => updateTitle(e, data.id)}
+                onChange={(e) => updateTitle(e, data)}
             />
             {
                 data.hasDescription &&
@@ -50,7 +51,7 @@ export const Question = SortableElement(({
                     label="Description"
                     type="text"
                     defaultValue={data.description}
-                    onChange={(e) => updateDescription(e, data.id)}
+                    onChange={(e) => updateDescription(e, data)}
                 />
             }
             <div className='buttons'>
@@ -71,10 +72,15 @@ export const Question = SortableElement(({
                 data.type === "List" && <div>
                     <div>
                         {data.options.map(item => (
-                            <Option key={item.id} option={item} parent={data} updateOption={updateOption} />
+                            <Option 
+                            key={item.id ?? Math.random() * 10000} 
+                            option={item} 
+                            parent={data} 
+                            updateOption={updateOption} 
+                            removeOption={removeOption}/>
                         ))}
                     </div>
-                    <Button variant="contained" className="w-100" color="primary" onClick={(e) => addOption(data.id)}>
+                    <Button variant="contained" className="w-100" color="primary" onClick={(e) => addOption(data)}>
                         + Add Option
                     </Button>
                 </div>

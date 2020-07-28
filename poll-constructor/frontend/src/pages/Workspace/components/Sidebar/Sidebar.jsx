@@ -11,10 +11,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import CloseIcon from '@material-ui/icons/Close';
 import './Sidebar.scss';
 export const Sidebar = ({
-    id,
-    type,
-    isOptional,
-    hasDescription,
+    question,
     updateType,
     switchOptional,
     switchHasDescription,
@@ -33,8 +30,8 @@ export const Sidebar = ({
                     <FormControl className="w-100">
                         <InputLabel>Type</InputLabel>
                         <Select
-                            value={type ? type : "Rating"}
-                            onChange={(e) => updateType(e, id)}
+                            value={question.type ? question.type : "Rating"}
+                            onChange={(e) => updateType(e, question)}
                         >
                             <MenuItem value={'Rating'}>Rating</MenuItem>
                             <MenuItem value={'List'}>List</MenuItem>
@@ -45,8 +42,8 @@ export const Sidebar = ({
                     control={
                         <Switch
                             color="primary"
-                            checked={isOptional ? isOptional : false}
-                            onChange={(e) => switchOptional(e, id)}
+                            checked={question.isOptional ? question.isOptional : false}
+                            onChange={(e) => switchOptional(e, question)}
 
                         />}
                     label="Is Optional"
@@ -56,8 +53,8 @@ export const Sidebar = ({
                     control={
                         <Switch
                             color="primary"
-                            checked={hasDescription ? hasDescription : false}
-                            onChange={(e) => switchHasDescription(e, id)}
+                            checked={question.hasDescription ? question.hasDescription : false}
+                            onChange={(e) => switchHasDescription(e, question)}
                         />}
                     label="Has Description"
                     labelPlacement="start"

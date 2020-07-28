@@ -45,6 +45,7 @@ export class Workspace extends React.Component {
         }
 
     }
+
     /* Questions management */
     addQuestion = () => {
         const question = {
@@ -71,6 +72,7 @@ export class Workspace extends React.Component {
             selectedQuestion: poll.questions[0]
         });
     }
+
     updateQuestionTitle = (event) => {
         const { poll } = this.state;
         poll.title = event.target.value;
@@ -81,6 +83,7 @@ export class Workspace extends React.Component {
             }
         })
     }
+
     selectQuestion = (event, index) => {
         this.setState((prevState) => {
             return {
@@ -91,6 +94,7 @@ export class Workspace extends React.Component {
         })
         console.log(this.state);
     }
+
     nextQuestion = (event) => {
         const { poll, selectedQuestion } = this.state;
         const index = poll.questions.findIndex(element => element === selectedQuestion);
@@ -104,6 +108,7 @@ export class Workspace extends React.Component {
             }
         })
     }
+
     prevQuestion = (event) => {
         const { poll, selectedQuestion } = this.state;
         const index = poll.questions.findIndex(element => element === selectedQuestion);
@@ -117,6 +122,7 @@ export class Workspace extends React.Component {
             }
         })
     }
+
     closeSidebar = (event) => {
         this.setState((prevState) => {
             return {
@@ -125,21 +131,25 @@ export class Workspace extends React.Component {
             }
         })
     }
+
     getSelectedIndex = () => {
         return this.state.poll.questions.findIndex(element => element === this.state.selectedQuestion)
     }
+
     updatePoll = (event, id) => {
         const { poll } = this.state;
         service.update(id, poll).then(data => {
             return data;
         });
     }
+
     createPoll = (event) => {
         const { poll } = this.state;
         service.create(poll).then(data => {
             return data;
         });
     }
+
     /* /QuestionsManagement */
 
     /* DnD */
@@ -156,13 +166,12 @@ export class Workspace extends React.Component {
     /* /DnD */
 
     /* Attributes management */
-    addOption = (id) => {
+    addOption = (question) => {
         const { poll } = this.state;
         const newOption = {
-            id: 0,
             name: null
         }
-        const options = poll.questions.find(x => x.id === id).options;
+        const options = poll.questions.find(x => x === question).options;
         options.push(newOption)
         this.setState((prevState) => {
             return {
@@ -171,6 +180,7 @@ export class Workspace extends React.Component {
             }
         })
     }
+
     updateOption = (event, option, parent) => {
         const { poll } = this.state;
         const options = poll.questions.find(x => x === parent).options;
@@ -183,9 +193,12 @@ export class Workspace extends React.Component {
             }
         })
     }
-    updateTitle = (event, id) => {
+
+    removeOption = (event,  option, parent) => {
         const { poll } = this.state;
-        poll.questions.find(x => x.id === id).title = event.target.value;
+        const options = poll.questions.find(x => x === parent).options;
+        const index = options.findIndex(o => o === option);
+        options.splice(index, 1);
         this.setState((prevState) => {
             return {
                 ...prevState,
@@ -193,9 +206,10 @@ export class Workspace extends React.Component {
             }
         })
     }
-    updateDescription = (event, id) => {
+    
+    updateTitle = (event, question) => {
         const { poll } = this.state;
-        poll.questions.find(x => x.id === id).description = event.target.value;
+        poll.questions.find(x => x === question).title = event.target.value;
         this.setState((prevState) => {
             return {
                 ...prevState,
@@ -203,9 +217,21 @@ export class Workspace extends React.Component {
             }
         })
     }
-    updateType = (event, id) => {
+
+    updateDescription = (event, question) => {
         const { poll } = this.state;
-        poll.questions.find(x => x.id === id).type = event.target.value;
+        poll.questions.find(x => x === question).description = event.target.value;
+        this.setState((prevState) => {
+            return {
+                ...prevState,
+                poll: poll
+            }
+        })
+    }
+
+    updateType = (event, question) => {
+        const { poll } = this.state;
+        poll.questions.find(x => x === question).type = event.target.value;
 
         this.setState((prevState) => {
             return {
@@ -214,10 +240,10 @@ export class Workspace extends React.Component {
             }
         })
     }
-    switchOptional = (event, id) => {
+
+    switchOptional = (event, question) => {
         const { poll } = this.state;
-        const question = poll.questions.find(x => x.id === id);
-        question.isOptional = event.target.checked;
+        poll.questions.find(x => x === question).isOptional = event.target.checked;
         this.setState((prevState) => {
             return {
                 ...prevState,
@@ -225,10 +251,10 @@ export class Workspace extends React.Component {
             }
         })
     }
-    switchHasDescription = (event, id) => {
+
+    switchHasDescription = (event, question) => {
         const { poll } = this.state;
-        const question = poll.questions.find(x => x.id === id);
-        question.hasDescription = event.target.checked;
+        poll.questions.find(x => x === question).hasDescription= event.target.checked;
         this.setState((prevState) => {
             return {
                 ...prevState,
@@ -261,10 +287,7 @@ export class Workspace extends React.Component {
                             {
                                 (selectedQuestion && isSidebarOpened) &&
                                 <Sidebar
-                                    id={selectedQuestion.id}
-                                    type={selectedQuestion.type}
-                                    isOptional={selectedQuestion.isOptional}
-                                    hasDescription={selectedQuestion.hasDescription}
+                                    question={selectedQuestion}
                                     updateType={this.updateType}
                                     switchOptional={this.switchOptional}
                                     switchHasDescription={this.switchHasDescription}
@@ -286,12 +309,13 @@ export class Workspace extends React.Component {
                                         {poll.questions.map((item, index) => {
                                             return (
                                                 <Question
-                                                    key={item.id}
+                                                    key={item.id ?? Math.random() * 10000}
                                                     i={index}
                                                     index={index}
                                                     data={item}
                                                     selectQuestion={this.selectQuestion}
                                                     removeQuestion={this.removeQuestion}
+                                                    removeOption = {this.removeOption}
                                                     addOption={this.addOption}
                                                     updateOption={this.updateOption}
                                                     updateTitle={this.updateTitle}
