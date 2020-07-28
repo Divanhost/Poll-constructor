@@ -71,9 +71,9 @@ export const Question = SortableElement(({
             {
                 data.type === "List" && <div>
                     <div>
-                        {data.options.map(item => (
+                        {data.options.map((item,index) => (
                             <Option 
-                            key={item.id ?? Math.random() * 10000} 
+                            key={index} 
                             option={item} 
                             parent={data} 
                             updateOption={updateOption} 

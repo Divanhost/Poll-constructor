@@ -14,14 +14,17 @@ using System.Threading.Tasks;
 namespace BusinessIntelligence.Core.Services.Implementation
 {
     public class PollService : ServiceBase, IPollService
-    {
-        public PollService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+    {   IContextAccessor _httpContext { get; set; }
+        public PollService(IUnitOfWork unitOfWork, IMapper mapper,IContextAccessor httpContext) : base(unitOfWork, mapper)
         {
+            _httpContext = httpContext;
         }
 
         public async Task Create(PollDto eventDto)
         {
             var eventDb = _mapper.Map<Poll>(eventDto);
+            var userId = _httpContext.GetUserId();
+            eventDb.CreatedById = userId;
             _unitOfWork.GetRepository<Poll, int>().Create(eventDb);
             await _unitOfWork.Save();
         }

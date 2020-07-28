@@ -26,10 +26,10 @@ export const Sidebar = ({
                     <KeyboardArrowDownIcon className='icon mr-2' onClick={(e) => prevQuestion(e)}/>
                     <CloseIcon className='icon' onClick={(e) => closeSidebar(e)}/>
                 </div>
-                <div className="p-3">
-                    <FormControl className="w-100">
+                <div className="p-3 w-100">
+                    <FormControl  className="w-100">
                         <InputLabel>Type</InputLabel>
-                        <Select
+                        <Select 
                             value={question.type ? question.type : "Rating"}
                             onChange={(e) => updateType(e, question)}
                         >
