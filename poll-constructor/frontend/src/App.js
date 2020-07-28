@@ -33,6 +33,9 @@ class App extends React.Component {
         loggedIn: true
       });
     }
+    else {
+      
+    }
   }
   render() {
     const { history } = this.props

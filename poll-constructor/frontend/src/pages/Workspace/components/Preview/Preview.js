@@ -1,5 +1,6 @@
 import React from 'react';
 import Checkbox from '@material-ui/core/Checkbox';
+import StarRatingComponent from 'react-star-rating-component';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import './Preview.scss'
@@ -35,6 +36,15 @@ export const Preview = ({ index, question, nextQuestion, prevQuestion }) => {
                                         ))}
                                     </div>
                                 </div>
+                            }
+                            {
+                                question.type === 'Rating' &&
+                                <StarRatingComponent
+                                    value={0} /* number of selected icon (`0` - none, `1` - first) */
+                                    starCount={5} /* number of icons in rating, default `5` */
+                                    starColor={'#a275c0'} /* color of selected icons, default `#ffb400` */
+                                    emptyStarColor={'#666'} /* color of non-selected icons, default `#333` */
+                                />
                             }
 
                         </div>
