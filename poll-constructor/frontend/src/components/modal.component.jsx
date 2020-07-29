@@ -1,6 +1,6 @@
 
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@material-ui/core';
 import Modal from '@material-ui/core/Modal';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -18,8 +18,8 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export const CustomModal = ({ children }) => {
-
+export const CustomModal = ({ children, isOpen }) => {
+    
     const classes = useStyles();
 
     const [opened, toggleModal] = useState(false);
@@ -30,6 +30,10 @@ export const CustomModal = ({ children }) => {
     const handleClose = () => {
         toggleModal(false)
     }
+    useEffect(() => {
+        debugger
+        toggleModal(isOpen);
+      }, [isOpen]);
     return (
         <div>
             <Button onClick={handleOpen}>Open</Button>

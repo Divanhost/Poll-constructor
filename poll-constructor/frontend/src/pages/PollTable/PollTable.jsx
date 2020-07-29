@@ -12,8 +12,12 @@ export class PollTable extends React.Component {
     };
   }
   componentDidMount() {
+    debugger
     service.getAll().then(data => {
-      if(data) {
+      if(data.errorCode === 401) {
+        this.props.logOut();
+      }
+      if(!data.errors) {
         this.setState({
           data: data.payload
         })

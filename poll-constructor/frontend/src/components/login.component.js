@@ -15,7 +15,7 @@ const required = value => {
   }
 };
 
-export default class Login extends Component {
+export class Login extends Component {
   constructor(props) {
     super(props);
 

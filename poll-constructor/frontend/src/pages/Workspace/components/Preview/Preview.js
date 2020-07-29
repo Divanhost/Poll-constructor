@@ -46,17 +46,19 @@ export const Preview = ({ index, question, nextQuestion, prevQuestion }) => {
                                     emptyStarColor={'#666'} /* color of non-selected icons, default `#333` */
                                 />
                             }
-
                         </div>
                         :
                         <div>
                             Select first question
-                </div>
+                        </div>
                 }
                 {
                     index !== -1 &&
                     <div className='footer'>
-                        <div className='icon'>
+                        <div className='icon'
+                        style={{
+                            width: 35
+                        }}>
                                 {index + 1}
                         </div>
                         <div className='buttons'>

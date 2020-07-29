@@ -11,11 +11,9 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import {CustomModal} from '../../components/modal.component';
+import {CustomModal, Login, Register} from '../../components';
 import { Button } from '@material-ui/core';
 import "./Navbar.scss";
-import Register from '../../components/register.component';
-import Login from '../../components/login.component';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,

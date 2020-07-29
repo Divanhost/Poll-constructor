@@ -63,8 +63,11 @@ export default class HttpService {
 
   validResponse(response) {
     if (response.status === 401) {
-      alert("you need to login again")
-      return;
+      localStorage.removeItem('user');
+      return {
+        errorCode: 401,
+        errors: 'You need to login again'
+      };
     }
     return response.json();
   }

@@ -52,7 +52,7 @@ const vfullName = value => {
   }
 };
 
-export default class Register extends Component {
+export class Register extends Component {
   constructor(props) {
     super(props);
     this.state = {

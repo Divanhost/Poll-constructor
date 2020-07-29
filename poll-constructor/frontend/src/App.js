@@ -7,48 +7,66 @@ import {
   Redirect,
   withRouter
 } from "react-router-dom"
-import {Workspace,PollTable, Navbar} from './pages';
-import {AuthService} from "./services";
+import { Workspace, PollTable, Navbar } from './pages';
+import { Login, CustomModal } from './components';
+import { AuthService } from "./services";
+
+const service = new AuthService();
 class App extends React.Component {
 
   constructor(props) {
     super(props);
-   
     this.state = {
-      loggedIn: false,
-      currentUser: undefined
+      currentUser: undefined,
+      loggedIn: false
     };
   }
 
- logOut = () => {
-    AuthService.logout();
+  logOut = () => {
+    const {loggedIn} = this.state;
+    if(loggedIn) {
+      service.logout();
+      this.setState((prevState) => {
+        return {
+          ...prevState,
+          loggedIn: false
+        }
+      })
+    }
   }
 
-  componentDidMount() {
-    const user = AuthService.getCurrentUser;
-
+  componentWillMount() {
+    const user = service.getCurrentUser;
     if (user) {
       this.setState({
-        currentUser: user,
-        loggedIn: true
-      });
+          loggedIn: true,
+          currentUser: user
+      })
     }
     else {
-      
+      this.logOut();
     }
   }
+  /* Addons */
+
   render() {
     const { history } = this.props
-    const {loggedIn, currentUser} = this.state;
+    const { currentUser,loggedIn } = this.state;
     return (
       <div className="App">
-      <Navbar loggedIn = {loggedIn} currentUser ={currentUser}/>
-      <Switch>
-        <Route history={history} path='/home' component={PollTable} />
-        <Route exact history={history} path='/constructor' component={Workspace} />
-        <Route history={history} path='/constructor/:id' component={Workspace} />
-        <Redirect from='/' to='/home'/>
-      </Switch>
+        <Navbar loggedIn={loggedIn} currentUser={currentUser} />
+        <div >
+          <CustomModal isOpen={!loggedIn}>
+            <Login>
+            </Login>
+          </CustomModal>
+        </div>
+        <Switch>
+          <Route history={history} path='/home' component={() => <PollTable logOut={this.logOut} />} />
+          <Route exact history={history} path='/constructor' component={Workspace} />
+          <Route history={history} path='/constructor/:id' component={Workspace} />
+          <Redirect from='/' to='/home' />
+        </Switch>
       </div>
     );
   }

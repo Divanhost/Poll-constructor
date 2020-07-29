@@ -63,7 +63,6 @@ export class Workspace extends React.Component {
     }
 
     removeQuestion = (event, question) => {
-        debugger
         const { poll } = this.state;
         const index = poll.questions.findIndex(q => q === question);
         poll.questions.splice(index, 1);
