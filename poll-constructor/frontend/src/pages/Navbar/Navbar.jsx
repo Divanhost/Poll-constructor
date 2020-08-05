@@ -11,7 +11,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import {CustomModal, Login, Register} from '../../components';
+import { CustomModal, Login, Register } from '../../components';
 import { Button } from '@material-ui/core';
 import "./Navbar.scss";
 const useStyles = makeStyles((theme) => ({
@@ -27,88 +27,100 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Navbar = (loggedIn) => {
+export const Navbar = (logOut, loggedIn, currentUser) => {
   const classes = useStyles();
-  const [auth, setAuth] = React.useState(true);
+  const [auth, setAuth] = React.useState(loggedIn);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-
-  const handleChange = (event) => {
-    setAuth(event.target.checked);
-  };
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
   const handleClose = () => {
     setAnchorEl(null);
   };
 
   return (
     <div className={classes.root}>
-      <FormGroup>
-        <FormControlLabel
-          control={<Switch checked={auth} onChange={handleChange} aria-label="login switch" />}
-          label={auth ? 'Logout' : 'Login'}
-        />
-      </FormGroup>
       <AppBar position="static">
         <Toolbar>
           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            <a href = "/home" className = "title">Poll Constructor</a>
+            <a href="/home" className="title">Poll Constructor</a>
           </Typography>
-          {auth && (
-           
-            <div>
-            <Button variant="contained" color="primary" href="/constructor">
+          <div>
+            {auth &&
+              <Button variant="contained" color="primary" href="/constructor">
                 + Create Poll
-            </Button>
-              <IconButton
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={open}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={handleClose}>Login 
-                <CustomModal>
-                  <Login>
-
-                  </Login>
-                </CustomModal>
+              </Button>
+            }
+            <IconButton
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleMenu}
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={open}
+              onClose={handleClose}
+            >
+              {
+                !auth ?
+                  <div>
+                    <MenuItem onClick={handleClose}>
+                      <CustomModal
+                        clickElRef={
+                          <div>
+                            Login
+                        </div>
+                        }
+                      >
+                        <Login>
+                        </Login>
+                      </CustomModal>
+                    </MenuItem>
+                    <div className="dropdown-divider"></div>
+                    <MenuItem onClick={handleClose}>
+                      <CustomModal
+                        clickElRef={
+                          <div>
+                            Register
+                        </div>
+                        }
+                      >
+                        <Register>
+                        </Register>
+                      </CustomModal>
+                    </MenuItem>
+                  </div>
+                  :
+                  <MenuItem onClick={(e) => {
+                    // TODO: WTF
+                    logOut.logOut();
+                    setAuth(false);
+                    handleClose();
+                  }}>
+                    LogOut
                 </MenuItem>
-                <div className="dropdown-divider"></div>
-                <MenuItem onClick={handleClose}>Register
-                <CustomModal>
-                  <Register>
-
-                  </Register>
-                </CustomModal>
-                </MenuItem>
-              </Menu>
-            </div>
-          )}
+              }
+            </Menu>
+          </div>
         </Toolbar>
       </AppBar>
     </div>

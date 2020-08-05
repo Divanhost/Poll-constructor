@@ -40,7 +40,7 @@ export class PollService {
   }
 
   returnData = (data) => {
-    if(data.errors){
+    if(data.errors.length){
       return ({
         errors: data.errors,
         errorCode: data.errorCode

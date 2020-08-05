@@ -26,13 +26,19 @@ export class Workspace extends React.Component {
         if (id) {
             service.get(id).then(data => {
                 if (data) {
-                    this.setState((prevState) => {
-                        return {
-                            ...prevState,
-                            poll: data.payload,
-                            loaded: true
-                        }
-                    })
+                    debugger
+                    if (data.errorCode === 401) {
+                        this.props.logOut();
+                    }
+                    if (!data.errors.length) {
+                        this.setState((prevState) => {
+                            return {
+                                ...prevState,
+                                poll: data.payload,
+                                loaded: true
+                            }
+                        })
+                    }
                 }
             });
         } else {
@@ -364,8 +370,6 @@ export class Workspace extends React.Component {
                         </div>
                 }
             </div>
-
         );
     }
-
 }

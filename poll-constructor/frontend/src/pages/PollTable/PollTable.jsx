@@ -12,12 +12,11 @@ export class PollTable extends React.Component {
     };
   }
   componentDidMount() {
-    debugger
     service.getAll().then(data => {
       if(data.errorCode === 401) {
         this.props.logOut();
       }
-      if(!data.errors) {
+      if(!data.errors.length) {
         this.setState({
           data: data.payload
         })
@@ -26,6 +25,7 @@ export class PollTable extends React.Component {
   }
   render() {
     const { data } = this.state;
+    const { loggedIn } = this.props;
     return (
       <div className="p-3">
         <table className="table table-bordered">
@@ -45,9 +45,14 @@ export class PollTable extends React.Component {
                 return (
                   <tr key={item.id}>
                     <td className="text-left">
-                      {/* <Link href="/constructor/item.id">{item.title}</Link>   */}
+                    {
+                      loggedIn ?
                       <NavLink to={`/constructor/${item.id}`}>{item.title}</NavLink>
-                      {/* <a href="/constructor" + item.id></a> */}
+                      :
+                      <div>
+                        {item.title}
+                      </div>
+                    }
                     </td>
                     <td>
                       {item.createdBy}

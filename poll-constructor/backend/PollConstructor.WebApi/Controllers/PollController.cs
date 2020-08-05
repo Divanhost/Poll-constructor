@@ -22,6 +22,7 @@ namespace BusinessIntelligence.Web.Controllers
             var result = await _service.GetById(id);
             return ResponseModel(result);
         }
+        [AllowAnonymous]
         [HttpGet("all")]
         public async Task<IActionResult> GetAll()
         {

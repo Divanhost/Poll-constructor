@@ -1,7 +1,6 @@
 
 
 import React, { useState, useEffect } from 'react';
-import { Button } from '@material-ui/core';
 import Modal from '@material-ui/core/Modal';
 import DialogContent from '@material-ui/core/DialogContent';
 import { makeStyles } from '@material-ui/core/styles';
@@ -18,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export const CustomModal = ({ children, isOpen }) => {
+export const CustomModal = ({ children, clickElRef, isOpen }) => {
     
     const classes = useStyles();
 
@@ -31,12 +30,14 @@ export const CustomModal = ({ children, isOpen }) => {
         toggleModal(false)
     }
     useEffect(() => {
-        debugger
         toggleModal(isOpen);
       }, [isOpen]);
     return (
         <div>
-            <Button onClick={handleOpen}>Open</Button>
+            <div onClick={handleOpen}>
+                {clickElRef}
+            </div>
+            {/* <Button onClick={handleOpen}>Open</Button> */}
             <Modal className={classes.paper}
                 open={opened}
                 onClose={handleClose}
