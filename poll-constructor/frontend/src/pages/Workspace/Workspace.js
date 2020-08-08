@@ -18,7 +18,8 @@ export class Workspace extends React.Component {
             },
             selectedQuestion: null,
             loaded: false,
-            isSidebarOpened: false
+            isSidebarOpened: false,
+            isSaving: false
         }
     }
     componentDidMount() {
@@ -48,6 +49,7 @@ export class Workspace extends React.Component {
                 }
             })
         }
+    setInterval(this.saveData, 5000);
 
     }
 
@@ -269,6 +271,43 @@ export class Workspace extends React.Component {
 
     /* /Attributes management */
 
+    saveData = () => {
+        try {
+            const {poll, id} = this.state;
+            if(!poll.title) {
+                return;
+            }
+            poll.questions = poll.questions.filter(x=>x.title !== null && x.title !== '');
+            poll.questions.forEach(q=> {
+               q.options = q.options.filter(x=>x.title !== null && x.title !== ''); 
+            })
+            if(id) {
+                service.update(id, poll).then(data => {
+                    this.setState((prevState) => {
+                        return {
+                            ...prevState,
+                            isSaving: false
+                        }
+                    })
+                return data;
+            });
+            } else {
+                service.create(poll).then(data => {
+                    this.setState((prevState) => {
+                        return {
+                            ...prevState,
+                            isSaving: false
+                        }
+                    })
+                    return data;
+                });
+            }
+        } catch (e) {
+            console.log(e);
+        }
+        
+    }
+
     render() {
         const { selectedQuestion, isSidebarOpened, loaded, poll, id } = this.state;
         const i = this.getSelectedIndex();
@@ -291,8 +330,8 @@ export class Workspace extends React.Component {
                             <div className='poll-title'>
                                 <ArrowBackIosIcon className='icon mr-3'/>
                                 <TextField
-                                    className="mb-1"
-                                    label="Title"
+                                    variant="outlined"
+                                    label="Poll title"
                                     type="text"
                                     defaultValue={poll.title}
                                     onChange={(e) => this.updateQuestionTitle(e)}
@@ -353,7 +392,7 @@ export class Workspace extends React.Component {
                                                 }}
                                                 onClick={(e) => this.updatePoll(e, id)}>
                                                 save
-                                        </Button>
+                                            </Button>
                                             :
                                             <Button
                                                 variant="contained"
