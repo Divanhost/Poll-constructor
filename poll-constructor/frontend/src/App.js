@@ -8,7 +8,7 @@ import {
   withRouter
 } from "react-router-dom"
 import { Workspace, PollTable, Navbar } from './pages';
-import { Login, CustomModal } from './components';
+import { PrivateRoute, LoginModal } from './components';
 import { AuthService } from "./services";
 
 
@@ -17,10 +17,20 @@ class App extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      currentUser: undefined,
-      loggedIn: false
-    };
+    const user = service.getCurrentUser();
+    if (user) {
+      this.state = {
+        currentUser: user,
+        loggedIn: true
+      };
+    }
+    else {
+      this.state = {
+        currentUser: undefined,
+        loggedIn: false
+      };
+      this.logOut();
+    }
   }
 
   logOut = () => {
@@ -35,37 +45,33 @@ class App extends React.Component {
       })
     }
   }
+  logIn = () => {
+    this.setState((prevState) => {
+      return {
+        ...prevState,
+        loggedIn: true
+      }
+    })
+  }
 
-  componentWillMount() {
-    const user = service.getCurrentUser;
-    if (user) {
-      this.setState({
-        loggedIn: true,
-        currentUser: user
-      })
-    }
-    else {
-      this.logOut();
-    }
+  customLoginModal = (loggedIn) => {
+    return (
+      <LoginModal isOpen={!loggedIn} logIn={this.logIn}/>
+    )
   }
   /* Addons */
-
   render() {
     const { history } = this.props
     const { currentUser, loggedIn } = this.state;
+    const auth = service.getCurrentUser() !== null;
     return (
         <div className="App">
           <Navbar logOut={this.logOut} loggedIn= {loggedIn} currentUser={currentUser} />
-          <div >
-            <CustomModal isOpen={!loggedIn}>
-              <Login>
-              </Login>
-            </CustomModal>
-          </div>
+          {this.customLoginModal(loggedIn)}
           <Switch>
             <Route history={history} path='/home' component={() => <PollTable logOut={this.logOut} loggedIn={loggedIn}/>} />
-            <Route exact history={history} path='/constructor' render={(props) => <Workspace {...props} logOut={this.logOut} />} />
-            <Route history={history} path='/constructor/:id' render={(props) => <Workspace {...props} logOut={this.logOut} />} />
+            <PrivateRoute exact history={history} path='/constructor' auth={auth} component={(props) => <Workspace {...props} logOut={this.logOut} />} />
+            <PrivateRoute history={history} path='/constructor/:id'  auth={auth} component={(props) => <Workspace {...props} logOut={this.logOut} />} />
             <Redirect from='/' to='/home' />
           </Switch>
         </div>

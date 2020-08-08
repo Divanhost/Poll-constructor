@@ -21,7 +21,7 @@ export const CustomModal = ({ children, clickElRef, isOpen }) => {
     
     const classes = useStyles();
 
-    const [opened, toggleModal] = useState(false);
+    const [opened, toggleModal] = useState(isOpen??false);
     const handleOpen = () => {
         toggleModal(true);
     }

@@ -6,3 +6,13 @@
     justify-content: center;
     align-items: center;
 }
+.poll-title {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px #dedede;
+    padding: .5em;
+}

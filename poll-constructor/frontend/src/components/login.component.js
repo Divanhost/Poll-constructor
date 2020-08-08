@@ -53,7 +53,7 @@ export class Login extends Component {
       const service = new AuthService();
       service.login(this.state.username, this.state.password)
         .then(() => {
-          alert('cool');
+          this.props.logIn();
         },
           error => {
             const resMessage =

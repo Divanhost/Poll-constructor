@@ -7,7 +7,7 @@ import './Preview.scss'
 export const Preview = ({ index, question, nextQuestion, prevQuestion }) => {
     return (
         <div className="preview-wrapper">
-            <div className='inner-container m-3 question-wrapper'>
+            <div className='m-3 question-wrapper'>
                 {
                     question ?
                         <div>

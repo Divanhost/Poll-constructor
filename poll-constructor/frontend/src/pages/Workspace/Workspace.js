@@ -3,7 +3,7 @@ import { QuestionsPool, Question, Sidebar, Preview } from "./components";
 import { arrayMove } from 'react-sortable-hoc';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { PollService } from '../../services';
 import './Workspace.scss'
 const service = new PollService();
@@ -26,7 +26,6 @@ export class Workspace extends React.Component {
         if (id) {
             service.get(id).then(data => {
                 if (data) {
-                    debugger
                     if (data.errorCode === 401) {
                         this.props.logOut();
                     }
@@ -288,21 +287,9 @@ export class Workspace extends React.Component {
                             </div>
                         </div>
                         :
-                        <div className='d-flex'>
-                            {
-                                (selectedQuestion && isSidebarOpened) &&
-                                <Sidebar
-                                    question={selectedQuestion}
-                                    updateType={this.updateType}
-                                    switchOptional={this.switchOptional}
-                                    switchHasDescription={this.switchHasDescription}
-                                    closeSidebar={this.closeSidebar}
-                                    nextQuestion={this.nextQuestion}
-                                    prevQuestion={this.prevQuestion}
-                                    className='w-100'
-                                />
-                            }
-                            <div className='q-pool'>
+                        <div>
+                            <div className='poll-title'>
+                                <ArrowBackIosIcon className='icon mr-3'/>
                                 <TextField
                                     className="mb-1"
                                     label="Title"
@@ -310,63 +297,82 @@ export class Workspace extends React.Component {
                                     defaultValue={poll.title}
                                     onChange={(e) => this.updateQuestionTitle(e)}
                                 />
-                                <QuestionsPool onSortEnd={this.onSortEnd} useDragHandle>
-                                    {poll.questions.map((item, index) => {
-                                        return (
-                                            <Question
-                                                key={index}
-                                                i={index}
-                                                index={index}
-                                                data={item}
-                                                selectQuestion={this.selectQuestion}
-                                                removeQuestion={this.removeQuestion}
-                                                removeOption={this.removeOption}
-                                                addOption={this.addOption}
-                                                updateOption={this.updateOption}
-                                                updateTitle={this.updateTitle}
-                                                updateDescription={this.updateDescription}
-                                                updateType={this.updateType}
-                                            />
-                                        )
-                                    })}
-                                </QuestionsPool>
-                                <Button variant="contained" className="mb-3"
-                                    style={{
-                                        width: 310
-                                    }}
-                                    color="primary" onClick={(e) => this.addQuestion(e)}>
-                                    + Add Question
-                                </Button>
-                                {
-                                    id ?
-                                        <Button
-                                            variant="contained"
-                                            className="mb-3"
-                                            color="primary"
-                                            style={{
-                                                width: 310
-                                            }}
-                                            onClick={(e) => this.updatePoll(e, id)}>
-                                            save
-                                        </Button>
-                                        :
-                                        <Button
-                                            variant="contained"
-                                            className="mb-3"
-                                            color="primary"
-                                            style={{
-                                                width: 310
-                                            }}
-                                            onClick={(e) => this.createPoll(e,)}>
-                                            create
-                                        </Button>
-                                }
                             </div>
-                            <Preview
-                                index={i}
-                                question={selectedQuestion}
-                                nextQuestion={this.nextQuestion}
-                                prevQuestion={this.prevQuestion} />
+                            <div className='d-flex'>
+
+                                {
+                                    (selectedQuestion && isSidebarOpened) &&
+                                    <Sidebar
+                                        question={selectedQuestion}
+                                        updateType={this.updateType}
+                                        switchOptional={this.switchOptional}
+                                        switchHasDescription={this.switchHasDescription}
+                                        closeSidebar={this.closeSidebar}
+                                        nextQuestion={this.nextQuestion}
+                                        prevQuestion={this.prevQuestion}
+                                        className='w-100'
+                                    />
+                                }
+                                <div className='q-pool'>
+
+                                    <QuestionsPool onSortEnd={this.onSortEnd} useDragHandle>
+                                        {poll.questions.map((item, index) => {
+                                            return (
+                                                <Question
+                                                    key={index}
+                                                    i={index}
+                                                    index={index}
+                                                    data={item}
+                                                    selectQuestion={this.selectQuestion}
+                                                    removeQuestion={this.removeQuestion}
+                                                    removeOption={this.removeOption}
+                                                    addOption={this.addOption}
+                                                    updateOption={this.updateOption}
+                                                    updateTitle={this.updateTitle}
+                                                    updateDescription={this.updateDescription}
+                                                    updateType={this.updateType}
+                                                />
+                                            )
+                                        })}
+                                    </QuestionsPool>
+                                    <Button variant="contained" className="mb-3"
+                                        style={{
+                                            width: 310
+                                        }}
+                                        color="primary" onClick={(e) => this.addQuestion(e)}>
+                                        + Add Question
+                                </Button>
+                                    {
+                                        id ?
+                                            <Button
+                                                variant="contained"
+                                                className="mb-3"
+                                                color="primary"
+                                                style={{
+                                                    width: 310
+                                                }}
+                                                onClick={(e) => this.updatePoll(e, id)}>
+                                                save
+                                        </Button>
+                                            :
+                                            <Button
+                                                variant="contained"
+                                                className="mb-3"
+                                                color="primary"
+                                                style={{
+                                                    width: 310
+                                                }}
+                                                onClick={(e) => this.createPoll(e,)}>
+                                                create
+                                        </Button>
+                                    }
+                                </div>
+                                <Preview
+                                    index={i}
+                                    question={selectedQuestion}
+                                    nextQuestion={this.nextQuestion}
+                                    prevQuestion={this.prevQuestion} />
+                            </div>
                         </div>
                 }
             </div>

@@ -1,13 +1,13 @@
 .preview-wrapper {
     background: rgb(195,107,149);
-    background: linear-gradient(180deg, rgba(195,107,149,1) 0%, rgba(185,69,176,1) 36%, rgba(117,0,203,1) 100%);flex-direction: column;
-    display: flex;
-    align-items: center;
+    background: linear-gradient(180deg, rgba(195,107,149,1) 0%, rgba(185,69,176,1) 36%, rgba(117,0,203,1) 100%);
+    flex-direction: column;
     width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
-.inner-container {
-    position: fixed;
-}
+
 .buttons {
     display: flex;
     justify-content: flex-start;

@@ -1,4 +1,38 @@
 .title,  .title:hover{
     color: #fff;
     text-decoration: none;
+    font-size: 1.25rem;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 500;
+    line-height: 1.6;
+    letter-spacing: 0.0075em;
+    margin-right: 1em;
+}
+.link,  .link:hover {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1rem;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 500;
+    line-height: 1.6;
+    letter-spacing: 0.0075em;
+    margin-right: 1em;
+
+}
+.login {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1rem;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 500;
+    line-height: 1.6;
+    letter-spacing: 0.0075em;
+}
+.d-links {
+    display: flex;
+    align-items: center;
+}
+.flex-navbar {
+    display: flex;
+    justify-content: space-between;
 }

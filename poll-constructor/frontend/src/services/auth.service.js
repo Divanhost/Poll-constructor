@@ -1,5 +1,5 @@
 import HttpService from './http.service'
-
+import jwt_decode from 'jwt-decode'
 const httpService = new HttpService();
 
 export class AuthService {
@@ -26,6 +26,13 @@ export class AuthService {
   }
   
   getCurrentUser = () => {
-    return JSON.parse(localStorage.getItem('user'));;
+    const user =  JSON.parse(localStorage.getItem('user'));
+    if(user) {
+      const decoded = jwt_decode(user);
+      return decoded.sub;
+
+    } else {
+      return null; 
+    }
   }
 }

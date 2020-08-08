@@ -1,14 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import Switch from '@material-ui/core/Switch';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormGroup from '@material-ui/core/FormGroup';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import { CustomModal, Login, Register } from '../../components';
@@ -27,10 +22,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Navbar = (logOut, loggedIn, currentUser) => {
+export const Navbar = (props) => {
   const classes = useStyles();
-  const [auth, setAuth] = React.useState(loggedIn);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [auth, setAuth] = useState(props.loggedIn);
+  const [user, setUser] = useState(props.currentUser);
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
   const handleMenu = (event) => {
@@ -39,32 +35,45 @@ export const Navbar = (logOut, loggedIn, currentUser) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  useEffect(() => {
+    setAuth(props.loggedIn);
+    setUser(props.currentUser);
+  }, [props.loggedIn, props.currentUser]);
   return (
     <div className={classes.root}>
       <AppBar position="static">
-        <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            <a href="/home" className="title">Poll Constructor</a>
-          </Typography>
-          <div>
-            {auth &&
-              <Button variant="contained" color="primary" href="/constructor">
+        <Toolbar className='flex-navbar'>
+        <div className='d-links'>
+          <h5>
+            <a href="/home" className="title">Test project site</a>
+          </h5>
+          <h6>
+            <a href="/home" className="link">Polls</a>
+          </h6>
+          <h6>
+            <a href="/home" className="link">Answers</a>
+          </h6>
+        </div>
+        <div className='d-links'>
+          {auth &&
+            <div className='d-links'>
+              <Button variant="contained" color="primary" href="/constructor" className='mr-3'>
                 + Create Poll
               </Button>
-            }
-            <IconButton
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
+              <div className="login">
+                {user}
+              </div>
+            </div>
+          }
+          <IconButton
+            aria-label="account of current user"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={handleMenu}
+            color="inherit"
+          >
+            <AccountCircle />
+          </IconButton>
             <Menu
               id="menu-appbar"
               anchorEl={anchorEl}
@@ -85,6 +94,7 @@ export const Navbar = (logOut, loggedIn, currentUser) => {
                   <div>
                     <MenuItem onClick={handleClose}>
                       <CustomModal
+                        isOpen ={false}
                         clickElRef={
                           <div>
                             Login
@@ -98,6 +108,7 @@ export const Navbar = (logOut, loggedIn, currentUser) => {
                     <div className="dropdown-divider"></div>
                     <MenuItem onClick={handleClose}>
                       <CustomModal
+                        isOpen ={false}
                         clickElRef={
                           <div>
                             Register
@@ -111,8 +122,7 @@ export const Navbar = (logOut, loggedIn, currentUser) => {
                   </div>
                   :
                   <MenuItem onClick={(e) => {
-                    // TODO: WTF
-                    logOut.logOut();
+                    props.logOut();
                     setAuth(false);
                     handleClose();
                   }}>
