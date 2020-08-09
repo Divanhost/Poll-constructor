@@ -7,7 +7,7 @@ import {
   Redirect,
   withRouter
 } from "react-router-dom"
-import { BrowserRouter as Router } from 'react-router-dom'
+import { BrowserRouter} from 'react-router-dom'
 import { Workspace, PollTable, Navbar } from './pages';
 import { PrivateRoute, LoginModal } from './components';
 import { AuthService } from "./services";
@@ -69,14 +69,17 @@ class App extends React.Component {
         <div className="App">
           <Navbar logOut={this.logOut} loggedIn= {loggedIn} currentUser={currentUser} />
           {this.customLoginModal(loggedIn)}
-          <Switch>
-            <Route history={history} path='/home' component={() => <PollTable logOut={this.logOut} loggedIn={loggedIn}/>} />
-            <PrivateRoute exact history={history} path='/constructor' auth={auth} component={(props) => <Workspace {...props} logOut={this.logOut} />} />
-            <PrivateRoute history={history} path='/constructor/:id'  auth={auth} component={(props) => <Workspace {...props} logOut={this.logOut} />} />
-            <Route exact path ='*'>
-              <Redirect to='/home' />
-            </Route>
-          </Switch>
+          <BrowserRouter>
+              <Switch>
+                <Route history={history} path='/home' component={() => <PollTable logOut={this.logOut} loggedIn={loggedIn}/>} />
+                <PrivateRoute exact history={history} path='/constructor' auth={auth} component={(props) => <Workspace {...props} logOut={this.logOut} />} />
+                <PrivateRoute history={history} path='/constructor/:id'  auth={auth} component={(props) => <Workspace {...props} logOut={this.logOut} />} />
+                <Route exact path ='*'>
+                  <Redirect to='/home' />
+                </Route>
+              </Switch>
+          </BrowserRouter>
+          
         </div>
     );
   }
