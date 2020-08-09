@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom'
+import { NavLink, Link } from 'react-router-dom'
 import { PollService } from '../../services';
 import './PollTable.scss';
 
@@ -47,7 +47,7 @@ export class PollTable extends React.Component {
                     <td className="text-left">
                     {
                       loggedIn ?
-                      <NavLink to={`/constructor/${item.id}`}>{item.title}</NavLink>
+                      <Link to={`/constructor/${item.id}`}>{item.title}</Link>
                       :
                       <div>
                         {item.title}

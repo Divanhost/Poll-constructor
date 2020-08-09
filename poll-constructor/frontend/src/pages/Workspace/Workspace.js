@@ -1,5 +1,6 @@
 import React from 'react';
 import { QuestionsPool, Question, Sidebar, Preview } from "./components";
+import { useHistory } from "react-router-dom";
 import { arrayMove } from 'react-sortable-hoc';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -28,6 +29,8 @@ export class Workspace extends React.Component {
             service.get(id).then(data => {
                 if (data) {
                     if (data.errorCode === 401) {
+                        const history = useHistory();
+                        history.push("/home");
                         this.props.logOut();
                     }
                     if (!data.errors.length) {
@@ -71,8 +74,10 @@ export class Workspace extends React.Component {
 
     removeQuestion = (event, question) => {
         const { poll } = this.state;
-        const index = poll.questions.findIndex(q => q === question);
-        poll.questions.splice(index, 1);
+        const index = poll.questions.indexOf(question);
+        if (index > -1) {
+            poll.questions.splice(index, 1);
+          }
         this.setState({
             poll: poll,
             selectedQuestion: poll.questions[0]
@@ -98,7 +103,6 @@ export class Workspace extends React.Component {
                 isSidebarOpened: true
             }
         })
-        console.log(this.state);
     }
 
     nextQuestion = (event) => {
@@ -202,9 +206,11 @@ export class Workspace extends React.Component {
 
     removeOption = (event, option, parent) => {
         const { poll } = this.state;
-        const options = poll.questions.find(x => x === parent).options;
-        const index = options.findIndex(o => o === option);
-        options.splice(index, 1);
+        let options = poll.questions.find(x => x === parent).options;
+        const index = options.indexOf(option);
+        if (index > -1) {
+            options.splice(index, 1);
+          }
         this.setState((prevState) => {
             return {
                 ...prevState,
@@ -277,12 +283,13 @@ export class Workspace extends React.Component {
             if(!poll.title) {
                 return;
             }
-            poll.questions = poll.questions.filter(x=>x.title !== null && x.title !== '');
-            poll.questions.forEach(q=> {
+            let newPoll = Object.assign({},poll);
+            newPoll.questions = newPoll.questions.filter(x=>x.title !== null && x.title !== '');
+            newPoll.questions.forEach(q=> {
                q.options = q.options.filter(x=>x.title !== null && x.title !== ''); 
             })
             if(id) {
-                service.update(id, poll).then(data => {
+                service.update(id, newPoll).then(data => {
                     this.setState((prevState) => {
                         return {
                             ...prevState,
@@ -292,7 +299,7 @@ export class Workspace extends React.Component {
                 return data;
             });
             } else {
-                service.create(poll).then(data => {
+                service.create(newPoll).then(data => {
                     this.setState((prevState) => {
                         return {
                             ...prevState,
@@ -309,7 +316,7 @@ export class Workspace extends React.Component {
     }
 
     render() {
-        const { selectedQuestion, isSidebarOpened, loaded, poll, id } = this.state;
+        const { selectedQuestion, isSidebarOpened, loaded, poll } = this.state;
         const i = this.getSelectedIndex();
         return (
             <div>
@@ -328,7 +335,9 @@ export class Workspace extends React.Component {
                         :
                         <div>
                             <div className='poll-title'>
-                                <ArrowBackIosIcon className='icon mr-3'/>
+                                <a href='/home'>
+                                    <ArrowBackIosIcon className='icon mr-3'/>
+                                </a>
                                 <TextField
                                     variant="outlined"
                                     label="Poll title"
@@ -381,7 +390,7 @@ export class Workspace extends React.Component {
                                         color="primary" onClick={(e) => this.addQuestion(e)}>
                                         + Add Question
                                 </Button>
-                                    {
+                                    {/* {
                                         id ?
                                             <Button
                                                 variant="contained"
@@ -404,7 +413,7 @@ export class Workspace extends React.Component {
                                                 onClick={(e) => this.createPoll(e,)}>
                                                 create
                                         </Button>
-                                    }
+                                    } */}
                                 </div>
                                 <Preview
                                     index={i}

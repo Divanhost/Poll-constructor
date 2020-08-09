@@ -11,7 +11,6 @@ export class PollService {
   }
 
   update = (id, data) => {
-    console.log(data)
     return httpService.put(`polls/${id}`, data)
     .then(data => {
       return this.returnData(data);
